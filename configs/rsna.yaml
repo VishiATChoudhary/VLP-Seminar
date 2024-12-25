@@ -1,20 +1,20 @@
 dataset:
   img_size: 224
-  dataset_dir: /u/home/lj0/datasets/RSNA_Pneumoni
-  train_csv: /u/home/lj0/Code/VLP-Seminars/annotations/rsna/train.csv
-  valid_csv: /u/home/lj0/Code/VLP-Seminars/annotations/rsna/val.csv
-  test_csv: /u/home/lj0/Code/VLP-Seminars/annotations/rsna/test.csv
+  dataset_dir: C:\Users\Vishi\VSC Codes\VIsLM_seminar\VLP-Seminar\data\rsna-pneumonia-detection-challenge
+  train_csv: C:\Users\Vishi\VSC Codes\VIsLM_seminar\VLP-Seminar\annotations\rsna\train.csv
+  valid_csv: C:\Users\Vishi\VSC Codes\VIsLM_seminar\VLP-Seminar\annotations\rsna\val.csv
+  test_csv: C:\Users\Vishi\VSC Codes\VIsLM_seminar\VLP-Seminar\annotations\rsna\test.csv
   
 cls:
   img_size: 224
-  backbone: resnet_50 #resnet and vit are supported
+  backbone: resnet_18 #resnet and vit are supported
   multilabel: False
   embed_dim: 128  
   in_features: 2048
   num_classes: 2
   pretrained: True
   freeze: True
-  checkpoint: /home/june/Code/MGCA-main/data/ckpts/resnet_50.ckpt
+  checkpoint: C:\Users\Vishi\VSC Codes\VIsLM_seminar\VLP-Seminar\data\checkpoints\resNet checkpoints\resnet50.ckpt
   lr: 5.0e-4
   dropout: 0.0
   weight_decay: 1.0e-6
@@ -30,7 +30,7 @@ det:
     pretrained: True
     freeze: True
     max_objects: 10
-    checkpoint: /home/june/Code/MGCA-main/data/ckpts/resnet_50.ckpt
+    checkpoint: C:\Users\Vishi\VSC Codes\VIsLM_seminar\VLP-Seminar\data\checkpoints\resNet checkpoints\ckpt-0.data-00000-of-00001
   
 seg:
     img_size: 224 #224 for vit
@@ -40,4 +40,4 @@ seg:
     pretrained: True
     freeze: True
     embed_dim: 128  
-    checkpoint: /home/june/Code/MGCA-main/data/ckpts/vit_base.ckpt
+    checkpoint: C:\Users\Vishi\VSC Codes\VIsLM_seminar\VLP-Seminar\data\checkpoints\chexZero checkpoints\best_64_0.0001_original_16000_0.861.pt

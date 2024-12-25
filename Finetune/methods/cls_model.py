@@ -35,8 +35,8 @@ class FinetuneClassifier(LightningModule):
             # self.val_auc = AUROC(task=task_type, num_classes=self.num_classes, compute_on_step=False)
             # self.test_auc = AUROC(task=task_type, num_classes=self.num_classes, compute_on_step=False)
             self.train_acc = Accuracy(task=task_type,num_classes=self.num_classes)
-            self.val_acc = Accuracy(task=task_type,num_classes=self.num_classes, compute_on_step=False)
-            self.test_acc = Accuracy(task=task_type,num_classes=self.num_classes, compute_on_step=False)
+            self.val_acc = Accuracy(task=task_type,num_classes=self.num_classes)#, compute_on_step=False)
+            self.test_acc = Accuracy(task=task_type,num_classes=self.num_classes)#, compute_on_step=False)
 
         # Initialize the backbone and classification head
         self.img_encoder_q = ImageEncoder(model_name=config["cls"]["backbone"], output_dim=config["cls"]['embed_dim'])
