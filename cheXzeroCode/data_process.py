@@ -32,7 +32,9 @@ def preprocess(img, desired_size=320):
     old_size = img.size
     ratio = float(desired_size)/max(old_size)
     new_size = tuple([int(x*ratio) for x in old_size])
-    img = img.resize(new_size, Image.ANTIALIAS)
+    # img = img.resize(new_size, Image.ANTIALIAS)
+    img = img.resize(new_size, Image.LANCZOS)
+
     # create a new image and paste the resized on it
 
     new_img = Image.new('L', (desired_size, desired_size))
@@ -61,7 +63,7 @@ def img_to_hdf5(cxr_paths: List[Union[str, Path]], out_filepath: str, resolution
                 img_dset[idx] = img
             except Exception as e: 
                 failed_images.append((path, e))
-    print(f"{len(failed_images)} / {len(cxr_paths)} images failed to be added to h5.", failed_images)
+    print(f"{len(failed_images)} out of {len(cxr_paths)} images failed to be added to h5.", failed_images)
 
 def get_files(directory):
     files = []

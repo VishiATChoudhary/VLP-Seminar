@@ -18,6 +18,8 @@ import sklearn
 from sklearn.metrics import confusion_matrix, accuracy_score, auc, roc_auc_score, roc_curve, classification_report
 from sklearn.metrics import precision_recall_curve, f1_score
 from sklearn.metrics import average_precision_score
+from pathlib import Path
+
 
 import clip
 from model import CLIP
@@ -40,7 +42,12 @@ class CXRTestDataset(data.Dataset):
         transform = None, 
     ):
         super().__init__()
-        self.img_dset = h5py.File(img_path, 'r')['cxr']
+        # self.img_dset = h5py.File(img_path, 'r')
+        with h5py.File(img_path, 'r') as f:
+            dataset = f['cxr']
+            dataset = torch.tensor(dataset)
+            self.img_dset = dataset
+    
         self.transform = transform
             
     def __len__(self):
@@ -49,7 +56,7 @@ class CXRTestDataset(data.Dataset):
     def __getitem__(self, idx):
         if torch.is_tensor(idx):
             idx = idx.tolist()
-            
+        test = self.img_dset[idx]
         img = self.img_dset[idx] # np array, (320, 320)
         img = np.expand_dims(img, axis=0)
         img = np.repeat(img, 3, axis=0)
@@ -146,8 +153,8 @@ def predict(loader, model, zeroshot_weights, softmax_eval=True, verbose=0):
     y_pred = []
     with torch.no_grad():
         for i, data in enumerate(tqdm(loader)):
+            pass
             images = data['img']
-
             # predict
             image_features = model.encode_image(images) 
             image_features /= image_features.norm(dim=-1, keepdim=True) # (1, 768)
@@ -390,8 +397,19 @@ def make(
         img_path=cxr_filepath,
         transform=transform, 
     )
-    loader = torch.utils.data.DataLoader(torch_dset, shuffle=False)
     
+    # jpeg_dir = '/deep/group/data/mimic-cxr/mimic-cxr-jpg/2.0.0/files'
+    # jpeg_paths = list(Path(jpeg_dir).rglob("*.jpg"))
+    # jpeg_paths = list(filter(lambda x: "view1" in str(x), jpeg_paths)) # filter only first frontal views
+    # jpeg_paths = sorted(jpeg_paths) # sort to align with groundtruth
+    
+    # #override dataset with jpeg paths
+    # torch_dset.img_dset = jpeg_paths
+
+
+    
+    loader = torch.utils.data.DataLoader(torch_dset, shuffle=False)
+    test = len(loader)
     return model, loader
 
 ## Run the model on the data set using ensembled models

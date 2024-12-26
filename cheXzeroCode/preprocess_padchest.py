@@ -176,7 +176,7 @@ def img_to_h5(
 
         ctr = 0
         for idx, path in enumerate(tqdm(cxr_paths)):
-            try: 
+            # try: 
                 # read image using cv2
                 img = cv2.imread(path)
                 # convert to PIL Image object
@@ -187,9 +187,9 @@ def img_to_h5(
                 img_dset[ctr] = img
                 ctr += 1
                 proper_cxr_paths.append(path)
-            except: 
-                print(f"Image {ctr} failed loading...")
-                continue
+            # except: 
+            #     print(f"Image {ctr} failed loading...")
+            #     continue
         print(h5f)
         
     return proper_cxr_paths

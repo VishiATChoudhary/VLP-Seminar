@@ -6,10 +6,10 @@ from data_process import get_cxr_paths_list, img_to_hdf5, get_cxr_path_csv, writ
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--csv_out_path', type=str, default='data/cxr_paths.csv', help="Directory to save paths to all chest x-ray images in dataset.")
-    parser.add_argument('--cxr_out_path', type=str, default='data/cxr.h5', help="Directory to save processed chest x-ray image data.")
-    parser.add_argument('--dataset_type', type=str, default='mimic', choices=['mimic', 'chexpert-test'], help="Type of dataset to pre-process")
+    parser.add_argument('--cxr_out_path', type=str, default=r'C:\Users\Vishi\VSC Codes\VIsLM_seminar\VLP-Seminar\cheXzeroCode\cxr.h5', help="Directory to save processed chest x-ray image data.")
+    parser.add_argument('--dataset_type', type=str, default='chexpert-test', choices=['mimic', 'chexpert-test'], help="Type of dataset to pre-process")
     parser.add_argument('--mimic_impressions_path', default='data/mimic_impressions.csv', help="Directory to save extracted impressions from radiology reports.")
-    parser.add_argument('--chest_x_ray_path', default='/deep/group/data/mimic-cxr/mimic-cxr-jpg/2.0.0/files', help="Directory where chest x-ray image data is stored. This should point to the files folder from the MIMIC chest x-ray dataset.")
+    parser.add_argument('--chest_x_ray_path', default=r'D:\CheXpert\valid', help="Directory where chest x-ray image data is stored. This should point to the files folder from the MIMIC chest x-ray dataset.")
     parser.add_argument('--radiology_reports_path', default='/deep/group/data/med-data/files/', help="Directory radiology reports are stored. This should point to the files folder from the MIMIC radiology reports dataset.")
     args = parser.parse_args()
     return args
@@ -27,11 +27,12 @@ if __name__ == "__main__":
     elif args.dataset_type == "chexpert-test": 
         # Get all test paths based on cxr dir
         cxr_dir = Path(args.chest_x_ray_path)
+        import os
         cxr_paths = list(cxr_dir.rglob("*.jpg"))
         cxr_paths = list(filter(lambda x: "view1" in str(x), cxr_paths)) # filter only first frontal views 
         cxr_paths = sorted(cxr_paths) # sort to align with groundtruth
-        assert(len(cxr_paths) == 500)
-       
+        # assert(len(cxr_paths) == 500)
+        print(len(cxr_paths))
         img_to_hdf5(cxr_paths, args.cxr_out_path)
         
         
