@@ -1,4 +1,5 @@
 import argparse
+import pydicom as dicom
 from pathlib import Path
 from data_process import get_cxr_paths_list, img_to_hdf5, get_cxr_path_csv, write_report_csv
 
@@ -27,13 +28,17 @@ if __name__ == "__main__":
     elif args.dataset_type == "chexpert-test": 
         # Get all test paths based on cxr dir
         cxr_dir = Path(args.chest_x_ray_path)
-        import os
         cxr_paths = list(cxr_dir.rglob("*.jpg"))
         cxr_paths = list(filter(lambda x: "view1" in str(x), cxr_paths)) # filter only first frontal views 
         cxr_paths = sorted(cxr_paths) # sort to align with groundtruth
         # assert(len(cxr_paths) == 500)
         print(len(cxr_paths))
         img_to_hdf5(cxr_paths, args.cxr_out_path)
+    elif args.dataset_type == "rsna": 
+        # Get all test paths based on cxr dir
+        cxr_dir = Path(args.chest_x_ray_path)
+        cxr_paths = list(cxr_dir.rglob("*.dcm"))
+     
         
         
         

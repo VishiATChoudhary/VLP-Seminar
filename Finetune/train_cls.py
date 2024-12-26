@@ -35,8 +35,8 @@ def parse_args():
     parser.add_argument("--num_workers", type=int, default=16, help="Number of workers for dataloader")
     parser.add_argument("--data_pct", type=float, default=1, help="Percentage of data to use")
     parser.add_argument("--max_epochs", type=int, default=50, help="Number of epochs to train")
-    parser.add_argument('--ckpt_dir', type=str, default='../data/ckpts', help='Directory to save model checkpoints')
-    parser.add_argument('--logger_dir', type=str, default='../data/log_output', help='Directory to save logs')
+    parser.add_argument('--ckpt_dir', type=str, default='data/ckpts', help='Directory to save model checkpoints')
+    parser.add_argument('--logger_dir', type=str, default='data/log_output', help='Directory to save logs')
     return parser.parse_args()
 
 if __name__ == '__main__':
@@ -63,21 +63,22 @@ if __name__ == '__main__':
         print("Dataset not supported")
         exit()
     #TODO: change to different models
+
+    #clear cache
+    torch.cuda.empty_cache()
+
     if config['cls']['pretrained']:
         checkpoint_path = config['cls']['checkpoint']
         if torch.cuda.is_available():
             checkpoint = torch.load(checkpoint_path)
         else:
             checkpoint = torch.load(checkpoint_path, map_location='cpu')
-        print(checkpoint.keys())
+        # print(checkpoint.keys())
         model = FinetuneClassifier(config)
-        model_state_dict = model.state_dict()
-        common_keys = set(checkpoint['state_dict'].keys()).intersection(set(model_state_dict.keys()))
-        print(f"Number of common keys between checkpoint and model: {len(common_keys)}")
-        model.load_state_dict(checkpoint['state_dict'], strict=False)
-
-
-
+        # model_state_dict = model.state_dict()
+        # common_keys = set(checkpoint['state_dict'].keys()).intersection(set(model_state_dict.keys()))
+        # print(f"Number of common keys between checkpoint and model: {len(common_keys)}")
+        # model.load_state_dict(checkpoint['state_dict'], strict=False)
     else:
         model = FinetuneClassifier(config)
 
@@ -98,12 +99,18 @@ if __name__ == '__main__':
         EarlyStopping(monitor="val_loss", min_delta=0.,
                       patience=10, verbose=False, mode="min")
     ]
+    # from transformers import TrainingArguments
+
+    # training_args = TrainingArguments(
+    #     output_dir=ckpt_dir,
+    #     report_to = None,
+    # )
 
     trainer = Trainer(
         max_epochs=args.max_epochs,
-        # gpus=args.gpus,
+        # gpus=0, #args.gpus,
         callbacks=callbacks,
-        logger=pl.loggers.WandbLogger( project='FinetuneCLS', name=f"{args.dataset}_{args.data_pct}_{extension}",dir=logger_dir),
+        # logger=pl.loggers.WandbLogger( project='FinetuneCLS', name=f"{args.dataset}_{args.data_pct}_{extension}",dir=logger_dir),
         strategy='ddp', #ddp, ddp_spawn
         )
 
